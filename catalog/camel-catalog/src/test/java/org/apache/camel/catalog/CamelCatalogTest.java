@@ -617,6 +617,12 @@ public class CamelCatalogTest {
     }
 
     @Test
+    public void validateNettyPropertiesWithPlaceholder() throws Exception {
+        EndpointValidationResult result = catalog.validateEndpointProperties("netty-http:http://quarkus-ml.{{env:NAMESPACE}}.svc.cluster.local/samples");
+        assertTrue(result.summaryErrorMessage(false), result.isSuccess());
+    }
+    
+    @Test
     public void validateJmsProperties() throws Exception {
         // jms
         EndpointValidationResult result = catalog.validateEndpointProperties("jms:temp-queue:cheese?jmsMessageType=Bytes");
@@ -1161,18 +1167,6 @@ public class CamelCatalogTest {
     }
 
     @Test
-    public void testValidateEndpointTimerDuration() throws Exception {
-        String uri = "timer:foo?period=5s";
-        EndpointValidationResult result = catalog.validateEndpointProperties(uri);
-        assertTrue(result.isSuccess());
-
-        uri = "timer:foo?period=5p";
-        result = catalog.validateEndpointProperties(uri);
-        assertFalse(result.isSuccess());
-        assertEquals("5p", result.getInvalidDuration().get("period"));
-    }
-
-    @Test
     public void testValidateEndpointHttpPropertyPlaceholder() throws Exception {
         String uri = "http://api.openweathermap.org/data/2.5/weather?{{property.weatherUri}}";
         EndpointValidationResult result = catalog.validateEndpointProperties(uri);
@@ -1448,28 +1442,6 @@ public class CamelCatalogTest {
         result = catalog.validateConfigurationProperty(text);
         assertFalse(result.isSuccess());
         assertEquals("12x5", result.getInvalidNumber().get("camel.resilience4j.slow-call-rate-threshold"));
-
-        text = "camel.faulttolerance.timeoutPoolSize=5";
-        result = catalog.validateConfigurationProperty(text);
-        assertTrue(result.isSuccess());
-
-        text = "camel.lra.coordinatorUrl=foobar";
-        result = catalog.validateConfigurationProperty(text);
-        assertTrue(result.isSuccess());
-
-        text = "camel.threadpool.maxQueueSize=123";
-        result = catalog.validateConfigurationProperty(text);
-        assertTrue(result.isSuccess());
-
-        text = "camel.threadpool.maxQueueSize=12x5";
-        result = catalog.validateConfigurationProperty(text);
-        assertFalse(result.isSuccess());
-        assertEquals("12x5", result.getInvalidInteger().get("camel.threadpool.maxQueueSize"));
-
-        text = "camel.health.routesEnabled=abc";
-        result = catalog.validateConfigurationProperty(text);
-        assertFalse(result.isSuccess());
-        assertEquals("abc", result.getInvalidBoolean().get("camel.health.routesEnabled"));
     }
 
     @Test
