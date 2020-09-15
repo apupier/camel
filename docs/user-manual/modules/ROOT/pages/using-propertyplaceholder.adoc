@@ -3,7 +3,6 @@
 
 *Since Camel 2.3*
 
-Camel now provides a new `PropertiesComponent` in `camel-core` which
 allows you to use property placeholders when defining Camel
 xref:endpoint.adoc[Endpoint] URIs. This works much like you would do if
 using Spring's `<property-placeholder>` tag. However Spring has a
@@ -80,7 +79,7 @@ The list of prefixes is:
 |Prefix |Description
 |`ref:` |Lookup in the xref:registry.adoc[Registry.]
 
-|`file:` |Load the from file system.
+|`file:` |Load from the file system.
 
 |`classpath:` |Load from the classpath (this is also the default if no
 prefix is provided).
