@@ -198,6 +198,11 @@ public interface CamelCatalog {
      * Find all the other (miscellaneous) names from the Camel catalog
      */
     List<String> findOtherNames();
+    
+    /**
+     * @return The set of Configuration property keys specific to the provider
+     */
+    List<String> findExtraConfigurationPropertyKeys();
 
     /**
      * @param  kind the kind to look for
@@ -215,6 +220,8 @@ public interface CamelCatalog {
                 return findOtherNames();
             case eip:
                 return findModelNames();
+            case configurationPropertyKeys:
+                return findExtraConfigurationPropertyKeys();
             default:
                 throw new IllegalArgumentException("Unexpected kind " + kind);
         }

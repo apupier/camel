@@ -40,8 +40,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
-import org.w3c.dom.Document;
-
 import org.apache.camel.catalog.impl.AbstractCamelCatalog;
 import org.apache.camel.catalog.impl.CatalogHelper;
 import org.apache.camel.tooling.model.BaseModel;
@@ -53,6 +51,7 @@ import org.apache.camel.tooling.model.LanguageModel;
 import org.apache.camel.tooling.model.MainModel;
 import org.apache.camel.tooling.model.OtherModel;
 import org.apache.camel.util.json.JsonObject;
+import org.w3c.dom.Document;
 
 /**
  * Default {@link CamelCatalog}.
@@ -239,6 +238,12 @@ public class DefaultCamelCatalog extends AbstractCamelCatalog implements CamelCa
     @Override
     public List<String> findOtherNames() {
         return cache("findOtherNames", runtimeProvider::findOtherNames);
+    }
+    
+    @Override
+    public List<String> findExtraConfigurationPropertyKeys() {
+        return cache("findExtraConfigurationPropertyKeys",
+                () -> runtimeProvider != null ? runtimeProvider.findExtraConfigurationPropertyKeys() : Collections.emptyList());
     }
 
     @Override
@@ -729,5 +734,4 @@ public class DefaultCamelCatalog extends AbstractCamelCatalog implements CamelCa
     }
 
     // CHECKSTYLE:ON
-
 }

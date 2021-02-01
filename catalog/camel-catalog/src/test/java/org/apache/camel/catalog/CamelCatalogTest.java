@@ -30,11 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.apache.camel.catalog.impl.CatalogHelper.loadText;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CamelCatalogTest {
 
@@ -1600,6 +1596,12 @@ public class CamelCatalogTest {
         assertTrue(result.isSuccess());
 
         result = catalog.validateEndpointProperties("netty-http:http://foo-bar/?requestTimeout={{env:TIMEOUT}}");
+        assertTrue(result.isSuccess());
+    }
+    
+    @Test
+    void validateIgnoreSpringBootSpecificProperties() throws Exception {
+        ConfigurationPropertiesValidationResult result = catalog.validateConfigurationProperty("camel.component.servlet.mapping.context-path=/example/*");
         assertTrue(result.isSuccess());
     }
 

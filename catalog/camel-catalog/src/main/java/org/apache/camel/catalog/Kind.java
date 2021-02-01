@@ -24,5 +24,6 @@ public enum Kind {
     dataformat,
     language,
     other,
-    eip
+    eip,
+    configurationPropertyKeys
 }

@@ -16,6 +16,7 @@
  */
 package org.apache.camel.catalog;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -89,5 +90,12 @@ public interface RuntimeProvider {
      * Find all the other (miscellaneous) names from the Camel catalog supported by the provider
      */
     List<String> findOtherNames();
+
+    /**
+     * @return The list of Configuration property keys specific to the provider
+     */
+    default List<String> findExtraConfigurationPropertyKeys() {
+        return Collections.emptyList();
+    }
 
 }

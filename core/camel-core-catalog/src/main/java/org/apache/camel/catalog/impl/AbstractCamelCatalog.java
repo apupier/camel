@@ -1275,7 +1275,7 @@ public abstract class AbstractCamelCatalog {
         }
     }
 
-    private static boolean acceptConfigurationPropertyKey(String key) {
+    protected boolean acceptConfigurationPropertyKey(String key) {
         if (key == null) {
             return false;
         }
