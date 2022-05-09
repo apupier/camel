@@ -268,7 +268,7 @@ Can be run with camel:
 camel run joke.yaml
 ----
 
-=== Run from clipboard
+=== Run from clipboardhot-deploy
 
 You can also run Camel routes directly from the OS clipboard. This allows to copy some code,
 and then quickly run this.
@@ -371,6 +371,8 @@ You can use the following Quarkus annotations:
 
 === Debugging
 
+==== Java Debugging
+
 You can debug both Camel JBang and your integration scripts by making use of the `--debug` flag provided by JBang:
 
 [source,bash]
@@ -381,6 +383,14 @@ Listening for transport dt_socket at address: 4004
 ----
 
 As you can see the default listening port is 4004 but can be configured as described in https://www.jbang.dev/documentation/guide/latest/debugging.html[JBang Debugging].
+
+<mention trick with processors?>
+<mention how to configure it in VS Code? Or point to generic documentation of various IDEs?>
+
+==== Camel Route debugging
+
+<mention the JMX url to which you can connect>
+<point to documentation to configure it in VS Code>
 
 == Open API
 
@@ -405,7 +415,7 @@ You simply do this by
 camel package uber-jar
 ----
 
-Which will generate `camel-runner.jar` as the output file.
+Which will generate `camel-runner.jar` as the output file.hot-deploy
 You can then run this JAR with Java that comes with everything included inside the .jar file.
 
 You can run the JAR with Java as follows:
