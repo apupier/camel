@@ -19,6 +19,7 @@ package org.apache.camel.dsl.jbang.core.commands;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -43,7 +44,7 @@ class DependencyCopyIT {
 
                 }
                 				""");
-        dependencyCopy.filePaths = new Path[] { route.toPath() };
+        dependencyCopy.files = Collections.singletonList(route.getAbsolutePath());
         dependencyCopy.mainClassname = "CamelApplication";
         dependencyCopy.javaVersion = "17";
         dependencyCopy.outputDirectory = tempDirForOutput.toString();

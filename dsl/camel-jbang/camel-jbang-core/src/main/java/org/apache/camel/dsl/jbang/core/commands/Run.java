@@ -23,7 +23,8 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -1219,16 +1220,24 @@ public class Run extends CamelCommand {
     }
 
     private void writeSettings(String key, String value) {
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(WORK_DIR + "/" + RUN_SETTINGS_FILE, true);
-            String line = key + "=" + value;
-            fos.write(line.getBytes(StandardCharsets.UTF_8));
-            fos.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
-        } catch (Exception e) {
-            // ignore
-        } finally {
-            IOHelper.close(fos);
+        Properties runSettings = new Properties();
+        String fileName = WORK_DIR + File.separator + RUN_SETTINGS_FILE;
+        File runSettingsFile = new File(fileName);
+        if (!runSettingsFile.exists()) {
+            try {
+                runSettingsFile.createNewFile();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        try (FileReader fileReader = new FileReader(runSettingsFile, StandardCharsets.UTF_8);
+             FileWriter fileWriter = new FileWriter(runSettingsFile, StandardCharsets.UTF_8);) {
+            runSettings.load(fileReader);
+            runSettings.setProperty(key, value);
+            runSettings.store(fileWriter, "");
+        } catch (IOException e) {
+            // ignore exception
         }
     }
 
