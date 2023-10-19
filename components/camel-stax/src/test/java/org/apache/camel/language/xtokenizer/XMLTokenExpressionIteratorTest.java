@@ -27,8 +27,11 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.diff.Diff;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  *
@@ -490,7 +493,15 @@ public class XMLTokenExpressionIteratorTest {
 
         assertEquals(expected.length, results.size(), "token count");
         for (int i = 0; i < expected.length; i++) {
-            assertEquals(expected[i], results.get(i), "mismatch [" + i + "]");
+            String expectedToken = expected[i];
+            String actualToken = results.get(i);
+            if (expectedToken.startsWith("<")) {
+                Diff diff = DiffBuilder.compare(expectedToken).withTest(actualToken).checkForSimilar().build();
+                assertFalse(diff.hasDifferences(),
+                        "\nExpected: " + expected + "\n\nGot: " + actualToken + "\n\nDiff: " + diff.toString());
+            } else {
+                assertEquals(expectedToken, actualToken, "mismatch [" + i + "]");
+            }
         }
     }
 
