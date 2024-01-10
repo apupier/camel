@@ -41,7 +41,6 @@ import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.eclipse.californium.scandium.dtls.pskstore.AdvancedPskStore;
 import org.eclipse.californium.scandium.dtls.pskstore.AdvancedSinglePskStore;
-import org.eclipse.californium.scandium.dtls.x509.NewAdvancedCertificateVerifier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -399,14 +398,15 @@ abstract class CoAPComponentTLSTestBase extends CamelTestSupport {
         PrivateKey privateKey = (PrivateKey) keyStore.getKey("service", "security".toCharArray());
         PublicKey publicKey = keyStore.getCertificate("service").getPublicKey();
 
-        NewAdvancedCertificateVerifier advancedCertificateVerifier = id -> {
-            return true;
-        };
-        NewAdvancedCertificateVerifier failedAdvancedCertificateVerifier = id -> {
-            return false;
-        };
+        //        NewAdvancedCertificateVerifier advancedCertificateVerifier = id -> {
+        //            return true;
+        //        };
+        //        NewAdvancedCertificateVerifier failedAdvancedCertificateVerifier = id -> {
+        //            return false;
+        //        };
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-        AdvancedPskStore advancedPskStore = new AdvancedSinglePskStore("some-identity", keyGenerator.generateKey().getEncoded());
+        AdvancedPskStore advancedPskStore
+                = new AdvancedSinglePskStore("some-identity", keyGenerator.generateKey().getEncoded());
 
         context.getRegistry().bind("serviceSSLContextParameters", serviceSSLContextParameters);
         context.getRegistry().bind("selfSignedServiceSSLContextParameters", selfSignedServiceSSLContextParameters);
@@ -419,8 +419,8 @@ abstract class CoAPComponentTLSTestBase extends CamelTestSupport {
 
         context.getRegistry().bind("privateKey", privateKey);
         context.getRegistry().bind("publicKey", publicKey);
-        context.getRegistry().bind("newAdvancedCertificateVerifier", advancedCertificateVerifier);
-        context.getRegistry().bind("failedNewAdvancedCertificateVerifier", failedAdvancedCertificateVerifier);
+        //        context.getRegistry().bind("newAdvancedCertificateVerifier", advancedCertificateVerifier);
+        //        context.getRegistry().bind("failedNewAdvancedCertificateVerifier", failedAdvancedCertificateVerifier);
         context.getRegistry().bind("advancedPskStore", advancedPskStore);
     }
 
