@@ -428,7 +428,7 @@ public class CoAPEndpoint extends DefaultEndpoint {
         if (client) {
             if (advancedCertificateVerifier == null && sslContextParameters == null && advancedPskStore == null) {
                 throw new IllegalStateException(
-                        "Either a newAdvancedCertificateVerifier, sslContextParameters or advancedPskStore object "
+                        "Either an advancedCertificateVerifier, sslContextParameters or advancedPskStore object "
                                                 + "must be configured for a TLS client");
             }
             builder.set(DTLS_RECOMMENDED_CIPHER_SUITES_ONLY, isRecommendedCipherSuitesOnly());
