@@ -1216,6 +1216,7 @@ public class EndpointSchemaGeneratorMojo extends AbstractGeneratorMojo {
                 if (apiParams != null) {
                     apiName = apiParams.apiName();
                     apiOption = !Strings.isNullOrEmpty(apiName);
+                    handleApiMethods(componentModel, apiName, apiParams);
                 }
             }
 
@@ -1311,6 +1312,32 @@ public class EndpointSchemaGeneratorMojo extends AbstractGeneratorMojo {
                 classElement = superclass;
             } else {
                 break;
+            }
+        }
+    }
+
+    private void handleApiMethods(ComponentModel componentModel, String apiName, ApiParams apiParams) {
+        final String targetApiName = apiName;
+        Optional<ApiModel> op = componentModel.getApiOptions().stream()
+                .filter(o -> o.getName().equals(targetApiName))
+                .findFirst();
+        if (!op.isPresent()) {
+            ApiModel api = new ApiModel();
+            api.setName(apiName);
+            componentModel.getApiOptions().add(api);
+            for (String alias : apiParams.aliases()) {
+                api.addAlias(alias);
+            }
+            api.setDescription(apiParams.description());
+            // component model takes precedence
+            api.setConsumerOnly(componentModel.isConsumerOnly() || apiParams.consumerOnly());
+            api.setProducerOnly(componentModel.isProducerOnly() || apiParams.producerOnly());
+            for (ApiMethod apiMethod : apiParams.apiMethods()) {
+                ApiMethodModel newMethod = api.newMethod(apiMethod.methodName());
+                newMethod.setDescription(apiMethod.description());
+                for (String signature : apiMethod.signatures()) {
+                    newMethod.addSignature(signature);
+                }
             }
         }
     }
@@ -1412,28 +1439,9 @@ public class EndpointSchemaGeneratorMojo extends AbstractGeneratorMojo {
         } else if (apiOption && apiParam != null) {
             option.setKind("parameter");
             final String targetApiName = apiName;
-            ApiModel api;
-            Optional<ApiModel> op = componentModel.getApiOptions().stream()
+            ApiModel api = componentModel.getApiOptions().stream()
                     .filter(o -> o.getName().equals(targetApiName))
-                    .findFirst();
-            if (!op.isPresent()) {
-                api = new ApiModel();
-                api.setName(apiName);
-                componentModel.getApiOptions().add(api);
-                if (apiParams != null) {
-                    for (String alias : apiParams.aliases()) {
-                        api.addAlias(alias);
-                    }
-                }
-                if (apiParams != null) {
-                    api.setDescription(apiParams.description());
-                    // component model takes precedence
-                    api.setConsumerOnly(componentModel.isConsumerOnly() || apiParams.consumerOnly());
-                    api.setProducerOnly(componentModel.isProducerOnly() || apiParams.producerOnly());
-                }
-            } else {
-                api = op.get();
-            }
+                    .findFirst().get();
             for (ApiMethod method : apiParam.apiMethods()) {
                 ApiMethodModel apiMethod = null;
                 for (ApiMethodModel m : api.getMethods()) {
@@ -1474,6 +1482,7 @@ public class EndpointSchemaGeneratorMojo extends AbstractGeneratorMojo {
                 componentModel.addEndpointOption((EndpointOptionModel) option);
             }
         }
+
     }
 
     private boolean collectUriPathProperties(
