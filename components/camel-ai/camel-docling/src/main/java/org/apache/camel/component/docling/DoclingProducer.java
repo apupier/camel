@@ -42,6 +42,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.camel.Exchange;
+import org.apache.camel.InvalidPayloadException;
+import org.apache.camel.WrappedFile;
+import org.apache.camel.support.DefaultProducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ai.docling.core.DoclingDocument;
 import ai.docling.serve.api.DoclingServeApi;
 import ai.docling.serve.api.convert.request.ConvertDocumentRequest;
 import ai.docling.serve.api.convert.request.options.ConvertDocumentOptions;
@@ -54,14 +65,6 @@ import ai.docling.serve.api.task.request.TaskStatusPollRequest;
 import ai.docling.serve.api.task.response.TaskStatus;
 import ai.docling.serve.api.task.response.TaskStatusPollResponse;
 import ai.docling.serve.client.DoclingServeClientBuilderFactory;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.camel.Exchange;
-import org.apache.camel.InvalidPayloadException;
-import org.apache.camel.WrappedFile;
-import org.apache.camel.support.DefaultProducer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Producer for Docling document processing operations.
@@ -382,9 +385,10 @@ public class DoclingProducer extends DefaultProducer {
         // Parse the JSON to extract metadata
         DocumentMetadata metadata = new DocumentMetadata();
         metadata.setFilePath(inputPath);
-
+        
         try {
-            JsonNode rootNode = objectMapper.readTree(jsonOutput);
+        	// TODO: get directly the DoclingDocument instead of converting back and forth
+        	DoclingDocument doclingDocument = objectMapper.readValue(jsonOutput, DoclingDocument.class);
 
             // Extract basic file information for file paths
             if (!inputPath.startsWith("http://") && !inputPath.startsWith("https://")) {
@@ -395,45 +399,16 @@ public class DoclingProducer extends DefaultProducer {
                 }
             }
 
-            // Try to extract metadata from the JSON structure
-            if (rootNode.has(DoclingMetadataFields.METADATA)) {
-                JsonNode metadataNode = rootNode.get(DoclingMetadataFields.METADATA);
-                extractMetadataFieldsFromJson(metadata, metadataNode);
-            }
+            metadata.setPageCount(doclingDocument.getPages().size());
 
-            // Look for document-level information
-            if (rootNode.has(DoclingMetadataFields.DOCUMENT)) {
-                JsonNode docNode = rootNode.get(DoclingMetadataFields.DOCUMENT);
-                if (docNode.has(DoclingMetadataFields.NAME) && metadata.getTitle() == null) {
-                    metadata.setTitle(docNode.get(DoclingMetadataFields.NAME).asText());
-                }
+            if (doclingDocument.getOrigin() != null && doclingDocument.getOrigin().getMimetype() != null) {
+            	metadata.setFormat(doclingDocument.getOrigin().getMimetype());
             }
-
-            // Extract main text to determine document type/format
-            if (rootNode.has(DoclingMetadataFields.MAIN_TEXT)) {
-                JsonNode mainTextNode = rootNode.get(DoclingMetadataFields.MAIN_TEXT);
-                if (mainTextNode.isArray() && mainTextNode.size() > 0) {
-                    // Document has text content
-                    metadata.setDocumentType("Text Document");
-                }
-            }
-
-            // Count pages if available
-            if (rootNode.has(DoclingMetadataFields.PAGES)) {
-                if (rootNode.get(DoclingMetadataFields.PAGES).isArray()) {
-                    metadata.setPageCount(rootNode.get(DoclingMetadataFields.PAGES).size());
-                } else if (rootNode.get(DoclingMetadataFields.PAGES).isInt()) {
-                    metadata.setPageCount(rootNode.get(DoclingMetadataFields.PAGES).asInt());
-                }
-            } else if (rootNode.has(DoclingMetadataFields.NUM_PAGES)) {
-                metadata.setPageCount(rootNode.get(DoclingMetadataFields.NUM_PAGES).asInt());
-            } else if (rootNode.has(DoclingMetadataFields.PAGE_COUNT)) {
-                metadata.setPageCount(rootNode.get(DoclingMetadataFields.PAGE_COUNT).asInt());
-            }
-
+            
             // Store raw metadata if requested
             if (configuration.isIncludeRawMetadata()) {
                 @SuppressWarnings("unchecked")
+                JsonNode rootNode = objectMapper.readTree(jsonOutput);
                 Map<String, Object> rawMap = objectMapper.convertValue(rootNode, Map.class);
                 metadata.setRawMetadata(rawMap);
             }
@@ -580,6 +555,7 @@ public class DoclingProducer extends DefaultProducer {
         metadata.setFilePath(inputPath);
 
         try {
+        	DoclingDocument value = objectMapper.readValue(jsonOutput, DoclingDocument.class);
             JsonNode rootNode = objectMapper.readTree(jsonOutput);
 
             // Extract basic file information
