@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+# dummy change to test the trigger
+
 CW=./../../camel-website
 LOCAL=./../camel
 
