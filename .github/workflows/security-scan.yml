@@ -28,7 +28,7 @@ permissions:
 
 jobs:
   owasp-check:
-    if: github.repository == 'apache/camel'
+    if: github.repository == 'apupier/camel'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

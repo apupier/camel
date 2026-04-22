@@ -26,7 +26,7 @@ on:
 permissions: {}
 jobs:
   build:
-    if: github.repository == 'apache/camel'
+    if: github.repository == 'apupier/camel'
     permissions:
       contents: write
       pull-requests: write # to create a PR (peter-evans/create-pull-request)

@@ -45,7 +45,7 @@ runs:
   using: "composite"
   steps:
     - id: install-mvnd
-      uses: apache/camel/.github/actions/install-mvnd@main
+      uses: apupier/camel/.github/actions/install-mvnd@main
       with:
         dry-run: ${{ inputs.skip-mvnd-install }}
     - name: maven test
