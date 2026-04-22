@@ -54,6 +54,7 @@ public class Athena2Component extends HealthCheckComponent {
                 && configurationClone.getAmazonAthenaClient() == null
                 && (configurationClone.getAccessKey() == null
                         || configurationClone.getSecretKey() == null)) {
+            System.out.println("this is a dummy change to test mvnd upgrade");
             throw new IllegalArgumentException(
                     "useDefaultCredentialsProvider is set to false, useProfileCredentialsProvider is set to false, useSessionCredentials is set to false, accessKey/secretKey or amazonAthenaClient must be specified");
         }
