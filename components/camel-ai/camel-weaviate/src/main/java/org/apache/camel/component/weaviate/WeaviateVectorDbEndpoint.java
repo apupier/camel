@@ -16,11 +16,13 @@
  */
 package org.apache.camel.component.weaviate;
 
-import io.weaviate.client.Config;
-import io.weaviate.client.WeaviateAuthClient;
-import io.weaviate.client.WeaviateClient;
-import io.weaviate.client.base.Result;
-import io.weaviate.client.v1.auth.exception.AuthException;
+import java.io.IOException;
+
+import io.weaviate.client6.v1.api.Authentication;
+import io.weaviate.client6.v1.api.Config;
+import io.weaviate.client6.v1.api.WeaviateClient;
+import io.weaviate.client6.v1.api.WeaviateOAuthException;
+import io.weaviate.client6.v1.internal.Proxy;
 import org.apache.camel.Category;
 import org.apache.camel.Component;
 import org.apache.camel.Consumer;
@@ -77,7 +79,7 @@ public class WeaviateVectorDbEndpoint extends DefaultEndpoint {
         return collection;
     }
 
-    public WeaviateClient getClient() throws AuthException {
+    public WeaviateClient getClient() throws WeaviateOAuthException, IOException {
         lock.lock();
         try {
             if (this.client == null) {
@@ -112,31 +114,26 @@ public class WeaviateVectorDbEndpoint extends DefaultEndpoint {
         super.doStop();
     }
 
-    private WeaviateClient createClient() throws AuthException {
+    private WeaviateClient createClient() throws WeaviateOAuthException, IOException {
         String scheme = configuration.getScheme();
         String host = configuration.getHost();
-        Config config = new Config(scheme, host);
-
-        // Configure proxy if we have proxy details within the configuration
+        Proxy proxy = null;
         if (configuration.getProxyHost() != null
                 && configuration.getProxyPort() != null
                 && configuration.getProxyScheme() != null) {
-            config.setProxy(configuration.getProxyHost(), configuration.getProxyPort().intValue(),
-                    configuration.getProxyScheme());
+            proxy = new Proxy(
+                    configuration.getProxyScheme(), configuration.getProxyHost(), configuration.getProxyPort().intValue(), null,
+                    null);
         }
-
-        WeaviateClient weaviate;
-
+        Authentication authentication = null;
         if (configuration.getApiKey() != null) {
-            weaviate = WeaviateAuthClient.apiKey(config, configuration.getApiKey());
-        } else {
-            weaviate = new WeaviateClient(config);
+            authentication = Authentication.apiKey(configuration.getApiKey());
         }
 
-        Result<Boolean> result = weaviate.misc().readyChecker().run();
-        if (result.hasErrors()) {
-            throw new AuthException(result.getError().toString());
-        }
+        Config config = new Config(scheme, host, -1, null, -1, null, authentication, null, null, proxy);
+
+        WeaviateClient weaviate = new WeaviateClient(config);
+        weaviate.isReady();
 
         return weaviate;
     }

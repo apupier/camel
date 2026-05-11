@@ -16,7 +16,7 @@
  */
 package org.apache.camel.component.weaviate;
 
-import io.weaviate.client.WeaviateClient;
+import io.weaviate.client6.v1.api.WeaviateClient;
 import org.apache.camel.RuntimeCamelException;
 import org.apache.camel.spi.Configurer;
 import org.apache.camel.spi.Metadata;

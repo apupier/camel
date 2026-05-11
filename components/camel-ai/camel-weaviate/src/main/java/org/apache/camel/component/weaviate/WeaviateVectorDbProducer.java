@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import io.weaviate.client.WeaviateClient;
+import io.weaviate.client6.v1.api.WeaviateClient;
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.data.api.ObjectUpdater;
 import io.weaviate.client.v1.data.model.WeaviateObject;
@@ -101,7 +101,7 @@ public class WeaviateVectorDbProducer extends DefaultProducer {
     //
     // Actions
     //
-    // ***************************************
+    // ***************************************WeaviateVectorDbProducer
 
     private void createCollection(Exchange exchange) throws Exception {
         final Message in = exchange.getMessage();
