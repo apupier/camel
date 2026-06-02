@@ -1091,7 +1091,7 @@ public class AWS2S3Producer extends DefaultProducer {
         S3Presigner.Builder builder = S3Presigner.builder();
         builder.credentialsProvider(
                 getConfiguration().isUseDefaultCredentialsProvider()
-                        ? DefaultCredentialsProvider.create() : StaticCredentialsProvider.create(
+                        ? DefaultCredentialsProvider.builder().build() : StaticCredentialsProvider.create(
                                 AwsBasicCredentials.create(getConfiguration().getAccessKey(),
                                         getConfiguration().getSecretKey())))
                 .region(Region.of(getConfiguration().getRegion()));
