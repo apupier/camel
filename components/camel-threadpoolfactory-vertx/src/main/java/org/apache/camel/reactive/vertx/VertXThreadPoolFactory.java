@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @JdkService(ThreadPoolFactory.FACTORY)
+@Deprecated(since ="4.21")
 public class VertXThreadPoolFactory extends DefaultThreadPoolFactory implements ThreadPoolFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(VertXThreadPoolFactory.class);

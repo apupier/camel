@@ -2323,6 +2323,10 @@ project — the core implementation now provides equivalent or better performanc
 
 The components camel-paho is deprecated. There were no new release since 2020 of the Java client, last non-regulatory commit was in 2022.
 
+=== Deprecation of camel-reactive-executor-vertx and camel-threadpoolfactory-vertx
+
+In preparation of upgrade to Vert.X 5, these 2 components are now deprecated and planned for removal after next LTS.
+
 === Tightened default ObjectInputFilter across deserialization sites - potential breaking change
 
 The in-code default `ObjectInputFilter` shipped by the following components now includes JEP-290 graph-shape limits
