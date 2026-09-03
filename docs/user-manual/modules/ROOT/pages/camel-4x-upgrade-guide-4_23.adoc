@@ -234,6 +234,10 @@ The component camel-threadpoolfactory-vertx was deprecated in 4.21. The componen
 
 `camel-zeebe` component was deprecated in 4.19 and has a straightforward replacement with `camel-camunda`. It is removed in 4.23.
 
+=== camel-alibaba-ssl - breaking change when getting the logs
+
+Following change in Alibaba model during upgrade of com.aliyun:sls20201230 from 5.16.0 to 5.17.0, the GetLogs is not directly providing a List of Map in the body anymore. It is now encapsulating it inside a `getLogsResponseBody`. The previous List of map is still accessible through the `getData` on this object.
+
 === camel-core - MemoryIdempotentRepository and MemoryAggregationRepository deprecated
 
 `MemoryIdempotentRepository` and `MemoryAggregationRepository` are deprecated in favor of the new
