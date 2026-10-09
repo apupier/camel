@@ -35,6 +35,8 @@ public class NatsProducerReplyToTimeoutIT extends NatsITSupport {
 
     @Test
     public void testReplyToTimeout() {
+        waitForNatsConsumers(1);
+
         try {
             template.requestBody(startUri, body1, String.class);
             fail("Should have thrown an exception");
