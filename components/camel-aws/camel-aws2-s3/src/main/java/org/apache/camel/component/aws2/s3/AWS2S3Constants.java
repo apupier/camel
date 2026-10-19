@@ -233,3 +233,4 @@ public interface AWS2S3Constants {
     String UPLOAD_LINK_SIGNED_PAYLOAD = "CamelAwsS3UploadLinkSignedPayload";
 
 }
+// experiment: trivial change to select AWS S3 module
