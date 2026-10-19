@@ -20,7 +20,7 @@ name: Build and test
 on:
   pull_request:
     branches:
-      - main
+      - exp-base
     # CI-only changes don't need a full build. Use workflow_dispatch to
     # test CI changes: gh workflow run "Build and test" -f pr_number=XXXX -f pr_ref=refs/pull/XXXX/head
     paths-ignore:
@@ -64,7 +64,7 @@ permissions:
 
 jobs:
   build:
-    if: github.repository == 'apache/camel'
+    if: github.repository == 'apupier/camel'
     permissions:
       contents: read
     runs-on: ubuntu-latest
