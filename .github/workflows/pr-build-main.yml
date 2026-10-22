@@ -55,8 +55,8 @@ on:
         required: false
         type: boolean
         default: false
-      include_jdk25:
-        description: 'Also run the build on JDK 25 (experimental)'
+      jdk25_only:
+        description: 'Run on JDK 25 only (skips JDK 21 build, experimental)'
         required: false
         type: boolean
         default: false
@@ -70,7 +70,7 @@ permissions:
 
 jobs:
   build:
-    if: ${{ !inputs.include_jdk25 }}
+    if: ${{ !inputs.jdk25_only }}
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -254,7 +254,7 @@ jobs:
           overwrite: true
 
   build-jdk25:
-    if: inputs.include_jdk25 == true
+    if: inputs.jdk25_only == true
     permissions:
       contents: read
     runs-on: ubuntu-latest
