@@ -62,7 +62,7 @@ on:
         default: false
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || inputs.pr_number || github.ref }}${{ inputs.extra_modules && '-component-test' || '' }}${{ inputs.include_jdk25 && '-jdk25' || '' }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || inputs.pr_number || github.ref }}${{ inputs.extra_modules && '-component-test' || '' }}
   cancel-in-progress: true
 
 permissions:
@@ -70,6 +70,7 @@ permissions:
 
 jobs:
   build:
+    if: ${{ !inputs.include_jdk25 }}
     permissions:
       contents: read
     runs-on: ubuntu-latest
