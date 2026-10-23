@@ -245,6 +245,10 @@ class IntegrationLauncherTest {
         assertThat(IntegrationLauncher.watchesFile(ownFiles, "mapping.groovy")).isFalse();
         assertThat(IntegrationLauncher.watchesFile(ownFiles, "routes/stock.groovy")).isTrue();
         assertThat(IntegrationLauncher.watchesFile(List.of("run", "*", "--dev"), "letter.ftl")).isTrue();
+        // an option that contains * (a JVM agent, an exclude pattern) is not a file glob
+        assertThat(IntegrationLauncher.watchesFile(
+                List.of("-javaagent:jacoco.jar=excludes=**/CamelThreadFactory*", "run", "order.camel.yaml", "--exclude=*.bak"),
+                "letter.ftl")).isFalse();
         // the command line cannot be read: waited for, as before
         assertThat(IntegrationLauncher.watchesFile(null, "letter.ftl")).isTrue();
     }
