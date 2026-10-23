@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -312,7 +313,9 @@ class AuthoringToolsTest {
         JsonObject written = call("camel_write_file", ctx,
                 Map.of("directory", dir.toString(), "file", "letter.ftl", "content", "Dear ${body}"));
         assertEquals("created", written.getString("status"));
-        assertNull(written.get("reload"), written.toJson());
+        // include the current JVM args in the failure message so a re-occurrence shows which arg carried a wildcard
+        String jvmArgs = ProcessHandle.current().info().arguments().map(Arrays::toString).orElse("(unreadable)");
+        assertNull(written.get("reload"), written.toJson() + " jvmArgs=" + jvmArgs);
         assertTrue(written.getString("message").contains("was started with its own files and does not reload"),
                 written.toJson());
     }
