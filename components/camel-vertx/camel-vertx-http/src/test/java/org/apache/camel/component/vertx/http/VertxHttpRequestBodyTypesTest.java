@@ -91,7 +91,8 @@ public class VertxHttpRequestBodyTypesTest extends VertxHttpTestSupport {
                         .setBody(simple("Got body: ${body}"));
 
                 from(getTestServerUri() + "/form")
-                        .to("mock:form");
+                        .to("mock:form")
+                        .setBody(constant("Got form"));
             }
         };
     }

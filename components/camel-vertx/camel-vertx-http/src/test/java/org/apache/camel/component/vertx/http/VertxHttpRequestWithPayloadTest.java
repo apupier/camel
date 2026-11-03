@@ -160,7 +160,8 @@ public class VertxHttpRequestWithPayloadTest extends VertxHttpTestSupport {
                                 exchange.toString();
                             }
                         })
-                        .to("mock:result");
+                        .to("mock:result")
+                        .setBody(constant("Got form"));
 
                 from(getTestServerUri() + "/upload")
                         .process(exchange -> {

@@ -128,7 +128,9 @@ public class VertxHttpSerializedBodyTest extends VertxHttpTestSupport {
                                 }
                             }
                         })
-                        .to("mock:result");
+                        .to("mock:result")
+                        .setBody(constant("OK"))
+                        .removeHeader(Exchange.CONTENT_TYPE);
 
                 from(getTestServerUri() + "/deserialized")
                         .process(new Processor() {
